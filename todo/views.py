@@ -1,8 +1,9 @@
 from django.utils.timezone import now
 from rest_framework import viewsets
-from .models import ToDoList, ToDoListCard, LastSaved
-from .serializers import ToDoListSerializer, ToDoListCardSerializer, LastSavedSerializer
+from .models import TodoList, TodoCard, LastSaved
+from .serializers import ToDoListSerializer, ToDoCardSerializer, LastSavedSerializer
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
 
 def update_last_saved():
     """Updates the last saved timestamp in the database."""
@@ -22,17 +23,23 @@ class LastSavedMixin:
         serializer.save()
         update_last_saved()
 
-    def perform_destroy(self, instance):
-        instance.delete()
-        update_last_saved()
-
 class ToDoListViewSet(LastSavedMixin, viewsets.ModelViewSet):
-    queryset = ToDoList.objects.all()
+    queryset = TodoList.objects.all()
     serializer_class = ToDoListSerializer
 
-class ToDoListCardViewSet(LastSavedMixin, viewsets.ModelViewSet):
-    queryset = ToDoListCard.objects.all()
-    serializer_class = ToDoListCardSerializer
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"success": True}, status=HTTP_200_OK)
+
+class ToDoCardViewSet(LastSavedMixin, viewsets.ModelViewSet):
+    queryset = TodoCard.objects.all()
+    serializer_class = ToDoCardSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"success": True}, status=HTTP_200_OK)
 
 class LastSavedViewSet(viewsets.ViewSet):
     def list(self, request):

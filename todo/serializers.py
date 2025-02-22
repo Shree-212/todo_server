@@ -1,14 +1,14 @@
 from rest_framework import serializers
-from .models import ToDoList, ToDoListCard, LastSaved
+from .models import TodoList, TodoCard, LastSaved
 
 class ToDoListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ToDoList
+        model = TodoList
         fields = '__all__'
 
-class ToDoListCardSerializer(serializers.ModelSerializer):
+class ToDoCardSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ToDoListCard
+        model = TodoCard
         fields = '__all__'
 
 class LastSavedSerializer(serializers.ModelSerializer):
